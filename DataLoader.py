@@ -5,7 +5,7 @@ class DataLoader():
     def __init__(self, root, datasets):
         self.root = root
         self.datasets = datasets
-        self.dataset = []
+        self.dataset = {"title" : [], "text" : [], "label" : []}
 
     def JoinDatasets(self):
         for dataset in self.datasets:
@@ -25,15 +25,20 @@ class DataLoader():
                         elif dataset == "data3":
                             label = 1 if row.label == "REAL" else 0
                         
-                        self.dataset.append({ "title": row.title, "text": row.text, "label": label })
+                        self.dataset["title"].append(row.title)
+                        self.dataset["text"].append(row.text)
+                        self.dataset["label"].append(label)
+                        
                         counter += 1
                     print("Loaded: {} rows\n".format(counter))
         print("Total loaded {} rows\n".format(len(self.dataset)))
 
-ROOT = "data/"
-datasets = ["data1", "data2", "data3"]
-d = DataLoader(ROOT, datasets)
-d.JoinDatasets()
+        self.dataset = pd.DataFrame(self.dataset)
 
 
-print(d.dataset[42])
+# ROOT = "data/"
+# datasets = ["data1", "data2", "data3"]
+# d = DataLoader(ROOT, datasets)
+# d.JoinDatasets()
+
+# print(d.dataset.head())
