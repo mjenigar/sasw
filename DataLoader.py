@@ -30,8 +30,6 @@ class DataLoader():
                     print("Loaded: {} rows\n".format(counter))
         print("Total loaded {} rows\n".format(len(self.dataset)))
 
-        
-
 ROOT = "data/"
 datasets = ["data1", "data2", "data3"]
 d = DataLoader(ROOT, datasets)
