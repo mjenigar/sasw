@@ -1,12 +1,32 @@
 import os
 import pandas as pd
 
+from tqdm import tqdm
+
+# Obtain additional stopwords from nltk
+import nltk
+nltk.download('stopwords')
+nltk.download('punkt')
+
+from nltk import word_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import SnowballStemmer
+
+stop_words = stopwords.words('english')
+stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
+
+import gensim
+from gensim.utils import simple_preprocess
+from gensim.parsing.preprocessing import STOPWORDS
+
 class DataLoader():
     def __init__(self, root, datasets):
         self.root = root
         self.datasets = datasets
-        self.dataset = {"title" : [], "text" : [], "label" : []}
+        self.dataset = {"title" : [], "text" : [], "label" : [], "clean_words": [], "clean": []}
 
+        self.LOAD = 100
+        
     def JoinDatasets(self):
         for dataset in self.datasets:
             for file in os.listdir("{}{}".format(self.root, dataset)):
@@ -28,14 +48,46 @@ class DataLoader():
                         self.dataset["title"].append(row.title)
                         self.dataset["text"].append(row.text)
                         self.dataset["label"].append(label)
-                        
+                        self.dataset["clean_words"].append(None)
+                        self.dataset["clean"].append(None)
+
                         counter += 1
+                        
+                        if counter > self.LOAD:
+                            break
                     print("Loaded: {} rows\n".format(counter))
+                
+                if counter > self.LOAD:
+                        break 
+            if counter > self.LOAD:
+                break
         print("Total loaded {} rows\n".format(len(self.dataset)))
 
         self.dataset = pd.DataFrame(self.dataset)
+        
+    def Preprocess(self, text):
+        result = []
+        for token in gensim.utils.simple_preprocess(text):
+            if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3 and token not in stop_words:
+                result.append(token)
+                
+        return result
+    
+    def CleanData(self):
+        for i in tqdm(range(len(self.dataset))):
+            self.dataset["clean_words"][i] = self.Preprocess("{} {}".format(self.dataset["title"][i], self.dataset["text"][i]))
+            self.dataset["clean"][i] = " ".join(self.dataset["clean_words"][i])
+                
 
+    def GetListOfWords(self):
+        list_of_words = []
+        for sample_words in self.dataset["clean_words"]:
+            for word in sample_words:
+                list_of_words.append(word)
+                
+        return list(set(list_of_words))
 
+    
 # ROOT = "data/"
 # datasets = ["data1", "data2", "data3"]
 # d = DataLoader(ROOT, datasets)
