@@ -1,33 +1,44 @@
 import os
 import pandas as pd
-
+import tensorflow as tf
+from tensorflow import keras
 from tqdm import tqdm
-
 # Obtain additional stopwords from nltk
 import nltk
 nltk.download('stopwords')
 nltk.download('punkt')
-
 from nltk import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
-
 stop_words = stopwords.words('english')
 stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
-
 import gensim
 from gensim.utils import simple_preprocess
 from gensim.parsing.preprocessing import STOPWORDS
+from tensorflow.keras.preprocessing.text import one_hot, Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from sklearn.model_selection import train_test_split
 
 class DataLoader():
     def __init__(self, root, datasets):
         self.root = root
         self.datasets = datasets
         self.dataset = {"title" : [], "text" : [], "label" : [], "clean_words": [], "clean": []}
-
-        self.LOAD = 100
+        
+        print("Loading datasets...")
+        self.JoinDatasets()
+        print('Cleaning dataset...')
+        self.CleanData()
+        self.SplitData(0.6, 0.2, 0.2)
+        print("DATASET: train {} test {} val {}".format(0.6, 0.2, 0.2))
+        
+        self.list_of_words = self.GetListOfWords()
+        self.Tokenize()
+        
         
     def JoinDatasets(self):
+        counter = 0
+        
         for dataset in self.datasets:
             for file in os.listdir("{}{}".format(self.root, dataset)):
                 if file[0] != "." and file != "submit.csv" and file != "test.csv":
@@ -35,8 +46,9 @@ class DataLoader():
                     print("Loading from: {}".format(full_path))
                     
                     data = pd.read_csv(full_path)
-                    counter = 0
                     for index, row in data.iterrows():
+                        # if counter > 20:
+                        #     break
                         
                         if dataset == "data1":
                             label = row.label
@@ -52,19 +64,11 @@ class DataLoader():
                         self.dataset["clean"].append(None)
 
                         counter += 1
-                        
-                        if counter > self.LOAD:
-                            break
                     print("Loaded: {} rows\n".format(counter))
-                
-                if counter > self.LOAD:
-                        break 
-            if counter > self.LOAD:
-                break
         print("Total loaded {} rows\n".format(len(self.dataset)))
 
         self.dataset = pd.DataFrame(self.dataset)
-        
+    
     def Preprocess(self, text):
         result = []
         for token in gensim.utils.simple_preprocess(text):
@@ -86,11 +90,19 @@ class DataLoader():
                 list_of_words.append(word)
                 
         return list(set(list_of_words))
-
     
-# ROOT = "data/"
-# datasets = ["data1", "data2", "data3"]
-# d = DataLoader(ROOT, datasets)
-# d.JoinDatasets()
+    def SplitData(self, train_size, test_size, val_size):
+        if (train_size + test_size + val_size) != 1.0:
+            return False
+        
+        self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(self.dataset.clean, self.dataset.label, test_size = test_size, shuffle=True)
+        self.x_train, self.x_val, self.y_train, self.y_val = train_test_split(self.x_train, self.y_train, test_size=val_size, shuffle=True)        
 
-# print(d.dataset.head())
+    def Tokenize(self, max_len=5000):
+        # Create a tokenizer to tokenize the words and create sequences of tokenized words
+        tokenizer = Tokenizer(num_words = len(self.list_of_words))
+        tokenizer.fit_on_texts(self.x_train)
+        self.train_sequences = tokenizer.texts_to_sequences(self.x_train)
+        self.train_sequences = pad_sequences(self.train_sequences, maxlen = max_len, padding = 'post', truncating = 'post')
+        self.test_sequences = tokenizer.texts_to_sequences(self.x_test)
+        self.test_sequences = pad_sequences(self.test_sequences, maxlen = max_len, truncating = 'post') 
