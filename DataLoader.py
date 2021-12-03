@@ -41,18 +41,16 @@ class DataLoader():
         
         for dataset in self.datasets:
             for file in os.listdir("{}{}".format(self.root, dataset)):
-                if counter >= 64:
-                        break
-                    
+                # if counter >= 64:
+                #         break
                 if file[0] != "." and file != "submit.csv" and file != "test.csv":
                     full_path = "{}{}/{}".format(self.root, dataset, file)
                     print("Loading from: {}".format(full_path))
 
                     data = pd.read_csv(full_path)
                     for index, row in data.iterrows():
-                        if counter > 64:
-                            break
-                        
+                        # if counter > 64:
+                        #     break
                         if dataset == "data1":
                             label = row.label
                         elif dataset == "data2":
@@ -68,8 +66,8 @@ class DataLoader():
 
                         counter += 1
                     print("Loaded: {} rows\n".format(counter))
-            if counter >= 64:
-                break       
+            # if counter >= 64:
+            #     break       
         print("Total loaded {} rows\n".format(len(self.dataset)))
 
         self.dataset = pd.DataFrame(self.dataset)
