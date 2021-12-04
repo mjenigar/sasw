@@ -8,7 +8,9 @@ INPUT = {
 $(document).ready(function(){
     
     $("body").on("click", "#analyze-btn", function(){
-        AnalyzeData();
+        console.log("analyze");
+        $("#main-modal").modal('show');
+        // AnalyzeData();
     });
 
     $("#input-date").datepicker();
@@ -39,6 +41,7 @@ function ClearForm(){
         $("#"+key).val("")
     }
 }
+
 
 function AnalyzeData(){
     if(GetFormData()){
