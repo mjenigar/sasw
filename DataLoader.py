@@ -1,8 +1,10 @@
 import os
+import re
 import pandas as pd
+import seaborn as sns
 import tensorflow as tf
-from tensorflow import keras
-from tqdm import tqdm
+import matplotlib.pyplot as plt
+
 # Obtain additional stopwords from nltk
 import nltk
 nltk.download('stopwords')
@@ -12,28 +14,37 @@ from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 stop_words = stopwords.words('english')
 stop_words.extend(['from', 'subject', 're', 'edu', 'use'])
-import gensim
-from gensim.utils import simple_preprocess
-from gensim.parsing.preprocessing import STOPWORDS
-from tensorflow.keras.preprocessing.text import one_hot, Tokenizer
+
+# from tensorflow import keras
+from tqdm import tqdm
+from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 
 class DataLoader():
-    def __init__(self, root, datasets):
+    def __init__(self, root, datasets, train_size, load=None):
         self.root = root
         self.datasets = datasets
-        self.dataset = {"title" : [], "text" : [], "label" : [], "clean_words": [], "clean": []}
+        self.dataset = {"content": [],"clean_words": [], "clean": [], "label" : []}
+        
+        self.train_size = train_size
+        self.test_size = 1 - self.train_size
+        
+        self.load = load
+        
+        self.stemmer_eng = SnowballStemmer('english')
+        self.words_eng = stopwords.words('english')
         
         print("Loading datasets...")
         self.JoinDatasets()
         print('Cleaning dataset...')
         self.CleanData()
-        self.SplitData(0.7, 0.3)
-        print("DATASET: train {} test {}".format(0.7, 0.3))
         
-        self.list_of_words = self.GetListOfWords()
-        self.Tokenize()
+        # self.GetListOfWords()
+        # self.SplitData(0.7, 0.3)
+        # print("DATASET: train {} test {}".format(0.7, 0.3))
+        # self.list_of_words = self.GetListOfWords()
+        # self.Tokenize()
         
         
     def JoinDatasets(self):
@@ -41,16 +52,16 @@ class DataLoader():
         
         for dataset in self.datasets:
             for file in os.listdir("{}{}".format(self.root, dataset)):
-                # if counter >= 64:
-                #         break
+                if self.load is not None and counter >= self.load:
+                        break
                 if file[0] != "." and file != "submit.csv" and file != "test.csv":
                     full_path = "{}{}/{}".format(self.root, dataset, file)
                     print("Loading from: {}".format(full_path))
 
                     data = pd.read_csv(full_path)
                     for index, row in data.iterrows():
-                        # if counter > 64:
-                        #     break
+                        if self.load is not None and counter >= self.load:
+                            break
                         if dataset == "data1":
                             label = row.label
                         elif dataset == "data2":
@@ -58,32 +69,53 @@ class DataLoader():
                         elif dataset == "data3":
                             label = 1 if row.label == "REAL" else 0
                         
-                        self.dataset["title"].append(row.title)
-                        self.dataset["text"].append(row.text)
+                        self.dataset["content"].append("{} {}".format(row.title, row.text))
                         self.dataset["label"].append(label)
                         self.dataset["clean_words"].append(None)
                         self.dataset["clean"].append(None)
-
                         counter += 1
                     print("Loaded: {} rows\n".format(counter))
-            # if counter >= 64:
-            #     break       
+            if self.load is not None and counter >= self.load:
+                break       
         print("Total loaded {} rows\n".format(len(self.dataset)))
 
         self.dataset = pd.DataFrame(self.dataset)
     
-    def Preprocess(self, text):
-        result = []
-        for token in gensim.utils.simple_preprocess(text):
-            if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3 and token not in stop_words:
-                result.append(token)
-                
-        return result
-    
     def CleanData(self):
         for i in tqdm(range(len(self.dataset))):
-            self.dataset["clean_words"][i] = self.Preprocess("{} {}".format(self.dataset["title"][i], self.dataset["text"][i]))
-            self.dataset["clean"][i] = " ".join(self.dataset["clean_words"][i])
+            sample = re.sub(r'http\S+', '', self.dataset["content"][i])
+            sample = re.compile(r'<[^>]+>').sub("", sample)
+            sample = re.sub('[!|()<>;?$=:+/*,-]|[0-9]|&nbsp', '', sample)
+            sample = sample.replace(".", "")
+            sample = " ".join(sample.split())
+
+            tokens = word_tokenize(sample)
+            tokenWords = [w for w in tokens if w.isalpha()]
+            afterStopwords = [w for w in tokenWords if w not in self.words_eng]
+            stemmedWords = [self.stemmer_eng.stem(w) for w in afterStopwords]
+            output = " ".join(stemmedWords)
+            self.dataset["clean"][i] = output
+
+    def GetSample(self, index):
+        return self.dataset["clean"][index]
+    
+    def PlotClassRation(self):
+        plt.figure(figsize = (8, 8))
+        sns.countplot(y = "label", data = self.dataset)
+    
+    
+    # def Preprocess(self, text):
+    #     result = []
+    #     for token in gensim.utils.simple_preprocess(text):
+    #         if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3 and token not in stop_words:
+    #             result.append(token)
+                
+    #     return result
+    
+    # def CleanData(self):
+    #     for i in tqdm(range(len(self.dataset))):
+    #         self.dataset["clean_words"][i] = self.Preprocess("{} {}".format(self.dataset["title"][i], self.dataset["text"][i]))
+    #         self.dataset["clean"][i] = " ".join(self.dataset["clean_words"][i])
                 
 
     def GetListOfWords(self):

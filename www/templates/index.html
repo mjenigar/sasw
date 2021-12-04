@@ -21,6 +21,17 @@
     <meta property="og:type" content="website">
   </head>
 
+  <style>
+    .mandatory-err {
+      border-color: red !important;
+      background: #e78383 !important;
+    }
+    .mandatory-good {
+      border-color: #ced4da !important;
+      background: #f8f9fa !important
+    }
+  </style>
+
   <body data-home-page="Home.html" data-home-page-title="Home" class="u-body"><header class="u-clearfix u-header u-header" id="sec-bffa"><div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
         <a href="https://www.webwise.ie/teachers/what-is-fake-news/" class="u-image u-logo u-image-1">
           <img src="../static/images/fake_news.jpg" class="u-logo-image u-logo-image-1">
@@ -89,17 +100,17 @@
           <div class="form-group mb-3">
             <div class="row">
               <div class="col">
-                <label for="input-title">Source</label>
+                <label for="input-src">Source</label>
                 <input id="input-src" type="text" class="form-control" style="color:black; width: 95%;" placeholder="Source">
               </div>
               <div class="col">
-                <label for="input-title">Date</label>
+                <label for="input-date">Date</label>
                 <input id="input-date" type="text" class="form-control bg-light" style="color:black;" placeholder="Article title">
               </div>
             </div>
           </div>
           <div class="form-group mb-3">
-            <label for="input-title">Content <span class="text-danger"> *</span></label>
+            <label for="input-content">Content <span class="text-danger"> *</span></label>
             <textarea id="input-content" class="form-control bg-light" style="color:black; " rows="4" cols="50" placeholder="Article content"></textarea>
           </div>
           <div class="row">
