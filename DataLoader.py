@@ -46,7 +46,6 @@ class DataLoader():
         # self.list_of_words = self.GetListOfWords()
         # self.Tokenize()
         
-        
     def JoinDatasets(self):
         counter = 0
         
@@ -110,40 +109,10 @@ class DataLoader():
         plt.figure(figsize = (8, 8))
         sns.countplot(y = "label", data = self.dataset)
     
-    
-    # def Preprocess(self, text):
-    #     result = []
-    #     for token in gensim.utils.simple_preprocess(text):
-    #         if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3 and token not in stop_words:
-    #             result.append(token)
-                
-    #     return result
-    
-    # def CleanData(self):
-    #     for i in tqdm(range(len(self.dataset))):
-    #         self.dataset["clean_words"][i] = self.Preprocess("{} {}".format(self.dataset["title"][i], self.dataset["text"][i]))
-    #         self.dataset["clean"][i] = " ".join(self.dataset["clean_words"][i])
-                
-
-    def GetListOfWords(self):
-        list_of_words = []
-        for sample_words in self.dataset["clean_words"]:
-            for word in sample_words:
-                list_of_words.append(word)
-                
-        return list(set(list_of_words))
-    
     def SplitData(self, train_size, test_size):
         if (train_size + test_size) != 1.0:
             return False
         
         self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(self.dataset.clean, self.dataset.label, test_size = test_size, shuffle=True)
 
-    def Tokenize(self, max_len=5000):
-        # Create a tokenizer to tokenize the words and create sequences of tokenized words
-        tokenizer = Tokenizer(num_words = len(self.list_of_words))
-        tokenizer.fit_on_texts(self.x_train)
-        self.train_sequences = tokenizer.texts_to_sequences(self.x_train)
-        self.train_sequences = pad_sequences(self.train_sequences, maxlen = max_len, padding = 'post', truncating = 'post')
-        self.test_sequences = tokenizer.texts_to_sequences(self.x_test)
-        self.test_sequences = pad_sequences(self.test_sequences, maxlen = max_len, truncating = 'post') 
+

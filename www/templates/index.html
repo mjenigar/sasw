@@ -24,6 +24,7 @@
   </head>
 
   <style>
+    .hidden {display: none !important; }
     .mandatory-err {
       border-color: red !important;
       background: #e78383 !important;
@@ -32,16 +33,136 @@
       border-color: #ced4da !important;
       background: #f8f9fa !important
     }
-  </style>
+    .wrapper {
+      z-index: 1;
+      position: absolute ;
+      height: 100% ;
+      width: 100% ;
+      background: #000000c9 !important;
+      backface-visibility: 0.5 !important;
+    }
+    #loader-container{
+      position: absolute;
+      z-index: 1;
+      margin: auto;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      width: 200px;
+      height: 200px;
+  }
+  #seg-loading{
+      width: 200px;
+      height: 200px;  
+  }
+  .report-row{
+    font-size: 1.5rem;
+  }
 
-  <body data-home-page="Home.html" data-home-page-title="Home" class="u-body"><header class="u-clearfix u-header u-header" id="sec-bffa"><div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
-        <a href="https://www.webwise.ie/teachers/what-is-fake-news/" class="u-image u-logo u-image-1">
+  @import url(https://fonts.googleapis.com/css?family=Calibri:400,300,700);
+
+
+.mt-100 {
+    margin-top: 100px
+}
+
+.card {
+    border-radius: 3vh;
+    margin: auto;
+    max-width: 380px;
+    padding: 7vh 6vh;
+    align-items: center;
+    box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+}
+
+@media(max-width:767px) {
+    .card {
+        width: 90vw
+    }
+}
+
+.card-img {
+    padding: 20px 0;
+    width: 60%
+}
+
+.card-img img {
+    opacity: 0.7
+}
+
+.card-title {
+    margin-bottom: unset
+}
+
+.card-title p {
+    color: rgb(237, 55, 116);
+    font-weight: 900;
+    font-size: 30px;
+    margin-bottom: unset
+}
+
+.card-text p {
+    color: grey;
+    font-size: 25px;
+    text-align: center;
+    padding: 3vh 0;
+    font-weight: lighter
+}
+
+.modal-button {
+    background-color: rgb(237, 55, 116);
+    border-color: rgb(237, 55, 116);
+    border-radius: 6px;
+    color: white;
+    font-size: 17px;
+    padding-right: 76px;
+    padding-left: 76px
+}
+
+.custom-btn {
+    width: 100%;
+    background-color: rgb(237, 55, 116);
+    border-color: rgb(237, 55, 116);
+    border-radius: 25px;
+    color: white;
+    font-size: 20px
+}
+
+.analyze-btn{
+  background: rgb(237, 55, 116);
+  border-color: rgb(237, 55, 116);
+}
+
+.custom-btn:focus{
+    box-shadow: none;
+    outline: none;
+    box-shadow: none;
+    color: white;
+    -webkit-box-shadow: none;
+    transition: none
+}
+
+.custom-btn:hover, .analyze-btn:hover {
+    color: white
+}
+
+
+  </style>
+  <body data-home-page="Home.html" data-home-page-title="Home" class="u-body"> 
+    <div class="wrapper hidden"></div>
+    <div id="loader-container" class="hidden">
+      <img id="seg-loading" src="../static/images/loading.gif" alt="">
+      <h1 style="color: white;">Analyzing...</h1>
+    </div>
+    <header class="u-clearfix u-header u-header" id="sec-bffa">
+      <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+        <a class="u-image u-logo u-image-1">
           <img src="../static/images/fake_news.jpg" class="u-logo-image u-logo-image-1">
         </a>
         <nav class="u-menu u-menu-dropdown u-offcanvas u-menu-1">
           <div class="menu-collapse" style="font-size: 1rem; letter-spacing: 0px;">
-            <a class="u-button-style u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#">
-            </a>
+            <a class="u-button-style u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#"></a>
           </div>
           <div class="u-nav-container">
             <ul class="u-nav u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" style="padding: 10px 20px;">HOME</a></li>
@@ -51,40 +172,38 @@
           </div>
         </nav>
       </div>
-  </header>
-
+    </header>
     <section class="u-align-center u-clearfix u-palette-5-dark-3 u-section-1" id="carousel_affe">
       <img src="../static/images/fake.jpg" class="u-align-left u-expanded-width u-image u-left-0 u-image-1">
       <div class="u-clearfix u-gutter-30 u-layout-wrap u-layout-wrap-1">
         <div class="u-layout">
           <div class="u-layout-row">
             <div class="u-container-style u-layout-cell u-left-cell u-palette-1-base u-size-20 u-layout-cell-1">
-                <div class="u-container-layout u-valign-top u-container-layout-1"><span class="u-icon u-icon-circle u-icon-1"></span>
+              <div class="u-container-layout u-valign-top u-container-layout-1"><span class="u-icon u-icon-circle u-icon-1"></span>
                 <h4 class="u-align-center u-text u-text-1">Čo je to Falošná správa?</h4>
                 <p class="u-align-center u-text u-text-body-alt-color u-text-2">Sú nepravdivé alebo zavádzajúce informácie zverejňované ako správa. Cieľom falošnej správy môže byť napríklad poškodiť reputáciu fyzickej či právnickej osoby alebo získať príjmy z reklamy.</p>
               </div>
             </div>
             <div class="u-container-style u-layout-cell u-palette-2-base u-size-20 u-layout-cell-2">
-                <div class="u-container-layout u-valign-top u-container-layout-2"><span class="u-icon u-icon-circle u-icon-2"></span>
-                <h4 class="u-align-center u-text u-text-3">Typy falošných správ</h4>
-                <p class="u-align-center u-text u-text-body-alt-color u-text-4">
-                    <ol>
-                          <li>Satira alebo paródia</li>
-                          <li>Falošné spojenie</li>
-                          <li>Zavádzajúci obsah</li>
-                          <li>Falošný kontext</li>
-                          <li>Obsah uvádzaný pod falošným menom</li>
-                          <li>Manipulovaný obsah </li>
-                          <li>Vymyslený obsah</li>
-                    </ol>
-                </p>
-              </div>
+              <div class="u-container-layout u-valign-top u-container-layout-2"><span class="u-icon u-icon-circle u-icon-2"></span>
+              <h4 class="u-align-center u-text u-text-3">Typy falošných správ</h4>
+              <p class="u-align-center u-text u-text-body-alt-color u-text-4">
+                <ol>
+                      <li>Satira alebo paródia</li>
+                      <li>Falošné spojenie</li>
+                      <li>Zavádzajúci obsah</li>
+                      <li>Falošný kontext</li>
+                      <li>Obsah uvádzaný pod falošným menom</li>
+                      <li>Manipulovaný obsah </li>
+                      <li>Vymyslený obsah</li>
+                </ol>
+              </p>
             </div>
-            <div class="u-align-center u-container-style u-layout-cell u-palette-3-base u-right-cell u-size-20 u-layout-cell-3">
-                <div class="u-container-layout u-valign-top u-container-layout-3"><span class="u-icon u-icon-circle u-icon-3"></span>
-                <h4 class="u-text u-text-5">Čo sme spravili?</h4>
-                <p class="u-text u-text-body-alt-color u-text-6">Doplniť</p>
-              </div>
+          </div>
+          <div class="u-align-center u-container-style u-layout-cell u-palette-3-base u-right-cell u-size-20 u-layout-cell-3">
+            <div class="u-container-layout u-valign-top u-container-layout-3"><span class="u-icon u-icon-circle u-icon-3"></span>
+              <h4 class="u-text u-text-5">Čo sme spravili?</h4>
+              <p class="u-text u-text-body-alt-color u-text-6">Doplniť</p>
             </div>
           </div>
         </div>
@@ -115,51 +234,59 @@
             <label for="input-content">Content <span class="text-danger"> *</span></label>
             <textarea id="input-content" class="form-control bg-light" style="color:black; " rows="4" cols="50" placeholder="Article content"></textarea>
           </div>
-          <!-- <div class="col">
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="option1">
-              <label class="form-check-label" for="inlineCheckbox1"> RNN </label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox2" value="option2">
-              <label class="form-check-label" for="inlineCheckbox2">  </label>
-            </div>
-            <div class="form-check form-check-inline">
-              <input class="form-check-input" type="checkbox" id="inlineCheckbox3" value="option3" disabled>
-              <label class="form-check-label" for="inlineCheckbox3">3 (disabled)</label>
-            </div>
-          </div> -->
           <div class="row">
             <div class="col" style="text-align: center;">
-              <button id="analyze-btn" type="button" class="btn btn-secondary m-3">Analyze</button>
+              <button id="analyze-btn" type="button" class="btn btn-secondary m-3 analyze-btn">Analyze</button>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="modal fade" tabindex="-1" role="dialog" id="main-modal">
+    <!-- <div class="modal fade" tabindex="-1" role="dialog" id="main-modal">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Analyzing...</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
+            <h3 class="modal-title">Analyze result </h3>
           </div>
-          <div class="modal-body">
-            <p>Modal body text goes here.</p>
+          <div id="modal-body" class="modal-body p-0">
+            <div class="row report-row">
+              <div class="col-sm-10">Random Forest Classifier</div>
+              <div class="col-sm-1"><i class="fas fa-thumbs-up"></i></div>
+            </div>
+            <div class="row report-row">
+              <div class="col-sm-10">Naive Bayes</div>
+              <div class="col-sm-1"><i class="fas fa-thumbs-up"></i></div>
+            </div>
+            <div class="row report-row">
+              <div class="col-sm-10">Recurrent Neural Net</div>
+              <div class="col-sm-1"><i class="fas fa-thumbs-up"></i></div>
+            </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
           </div>
         </div>
       </div>
+    </div> -->
+
+    <div class="modal fade" id="main-modal" role="dialog">
+        <div class="modal-dialog">
+            <div class="card">
+                <div class="card-img"> 
+                  <img class="img-fluid" src="../static/images/results.png">
+                </div>
+                <div class="card-title">
+                    <p>Results</p>
+                </div>
+                <div id="modal-body" class="card-text mt-3"></div> 
+            </div>
+        </div>
     </div>
 
     <footer class="u-align-center u-clearfix u-footer u-grey-80 u-footer" id="sec-a1ac"><div class="u-clearfix u-sheet u-sheet-1">
         <p class="u-small-text u-text u-text-variant u-text-1">SÉMANTICKÝ A SOCIÁLNY WEB 2021<br>Created by: Bc. Zsolt Pankulics, Bc. Martin Jenigár</p>
-      </div></footer>
+      </div>
+    </footer>
   </body>
 </html>
