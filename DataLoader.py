@@ -68,8 +68,15 @@ class DataLoader():
                             label = 1 if file == "True.csv" else 0
                         elif dataset == "data3":
                             label = 1 if row.label == "REAL" else 0
+                        elif dataset == "data4": 
+                            label = 1 if row.label == "TRUE" else 0
                         
-                        self.dataset["content"].append("{} {}".format(row.title, row.text))
+                        if dataset == "data4":
+                            content = "{} {} {}".format(row.title, row.text, row.source)
+                        else:
+                            content = "{} {}".format(row.title, row.text)
+                        
+                        self.dataset["content"].append(content)
                         self.dataset["label"].append(label)
                         self.dataset["clean_words"].append(None)
                         self.dataset["clean"].append(None)

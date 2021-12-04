@@ -22,10 +22,10 @@ from tensorflow.keras.optimizers import Adam
 
 from sklearn.metrics import accuracy_score, confusion_matrix
 from sklearn.metrics import precision_recall_fscore_support as score
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-
+from sklearn.naive_bayes import MultinomialNB
 
 class RNN:
     def __init__(self, dataset, lr=0.001):
@@ -168,6 +168,78 @@ class ModelRandomForestClassifier:
             pickle.dump(self.model, fid)
             
         with open("{}{}".format(self.save_dir, "vectorizer.pkl"), 'wb') as fid:
+            pickle.dump(self.vectorizer, fid)
+
+    def LoadModel(self, name):
+        with open("{}{}".format(self.save_dir, name), 'rb') as f:
+            self.model = pickle.load(f)
+
+        return self.model
+
+class NaiveBayes:
+    def __init__(self, dataset):
+        self.dataset = dataset
+        self.save_dir = "drive/MyDrive/sasw/model/"
+        try:
+            self.vectorizer = self.LoadModel("vectorizer_nb.pkl")
+        except:
+            self.vectorizer = CountVectorizer()
+        self.classifier = MultinomialNB()
+        
+    def PreprocessData(self):
+        y = self.dataset.dataset["label"]
+        X = self.vectorizer.fit_transform(self.dataset.dataset.clean).toarray()
+        self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(X, self.dataset.dataset.label, test_size = self.dataset.test_size, shuffle=True) 
+        
+    def Train(self):
+        self.model = self.classifier.fit(self.x_train, self.y_train)
+        
+    def Predict(self):
+        self.y_pred = self.model.predict(self.x_test)
+
+        precision, recall, fscore, train_support = score(self.y_test, self.y_pred, pos_label=1, average='binary')
+        print('Precision: {} / Recall: {} / F1-Score: {} / Accuracy: {}'.format(
+        round(precision, 3), round(recall, 3), round(fscore,3), round(accuracy_score(self.y_test, self.y_pred), 3)))
+
+        cm = confusion_matrix(self.y_test, self.y_pred)
+        class_label = [0, 1]
+        df_cm = pd.DataFrame(cm, index=class_label,columns=class_label)
+        sns.heatmap(df_cm, annot=True, fmt='d')
+        plt.title("Confusion Matrix")
+        plt.xlabel("Predicted Label")
+        plt.ylabel("True Label")
+        plt.show()
+    
+    def PreprocessSample(self, sample):
+        stemmer_eng = SnowballStemmer('english')
+        words_eng = stopwords.words('english')
+        
+        sample = re.sub(r'http\S+', '', sample)
+        sample = re.compile(r'<[^>]+>').sub("", sample)
+        sample = re.sub('[!|()<>;?$=:+/*,-]|[0-9]|&nbsp', '', sample)
+        sample = sample.replace(".", "")
+        sample = " ".join(sample.split())
+
+        tokens = word_tokenize(sample)
+        tokenWords = [w for w in tokens if w.isalpha()]
+        afterStopwords = [w for w in tokenWords if w not in words_eng]
+        stemmedWords = [stemmer_eng.stem(w) for w in afterStopwords]
+        output = " ".join(stemmedWords)
+        
+        return output
+    
+    def MakePrediction(self, title, content):
+        sample = self.PreprocessSample("{} {}".format(title, content))
+        X = self.vectorizer.transform([sample]).toarray()
+        prediction = self.model.predict(X)
+        
+        print(prediction)
+    
+    def SaveModel(self):
+        with open("{}{}".format(self.save_dir, "nb.pkl"), 'wb') as fid:
+            pickle.dump(self.model, fid)
+            
+        with open("{}{}".format(self.save_dir, "vectorizer_nb.pkl"), 'wb') as fid:
             pickle.dump(self.vectorizer, fid)
 
     def LoadModel(self, name):
