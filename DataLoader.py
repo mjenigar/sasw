@@ -57,7 +57,11 @@ class DataLoader():
                     full_path = "{}{}/{}".format(self.root, dataset, file)
                     print("Loading from: {}".format(full_path))
 
-                    data = pd.read_csv(full_path)
+                    if dataset == "data4":
+                        data = pd.read_csv(full_path, encoding='cp1252')
+                    else:
+                        data = pd.read_csv(full_path)
+                        
                     for index, row in data.iterrows():
                         if self.load is not None and counter >= self.load:
                             break
@@ -70,8 +74,12 @@ class DataLoader():
                         elif dataset == "data4": 
                             label = 1 if row.label == "TRUE" else 0
                         
+                        
                         if dataset == "data4":
-                            content = "{} {} {}".format(row.title, row.text, row.source)
+                            if not pd.isna(row.title):
+                                content = "{} {} {}".format(row.title, row.text, row.source)
+                            else:
+                                content = "{} {}".format(row.text, row.source)
                         else:
                             content = "{} {}".format(row.title, row.text)
                         

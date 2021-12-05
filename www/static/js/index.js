@@ -49,10 +49,10 @@ function AnalyzeData(){
             data: {input: JSON.stringify(INPUT)},
             type: 'POST',
             success: function(data){
-                data = JSON.parse(data);
+                // data = JSON.parse(data);
                 console.log(data);
-                RenderReport(data);
-                $("#main-modal").modal('show');
+                // RenderReport(data);
+                // $("#main-modal").modal('show');
                 
             },
             error: function(error){

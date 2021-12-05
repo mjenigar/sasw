@@ -16,6 +16,7 @@ from nltk.corpus import stopwords
 from nltk.stem import SnowballStemmer
 
 from tensorflow.keras.preprocessing.text import Tokenizer
+from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import Dense, Embedding, LSTM, Bidirectional
 from tensorflow.keras.models import Model
@@ -47,10 +48,11 @@ class RNN:
             print("Model loaded from: {}".format(best_model_file))
         else:
             print("Model spawned")
+            self.list_of_words = self.GetListOfWords()
             # Seq Model build        
             self.model = Sequential()
             # embeddidng layer
-            self.model.add(Embedding(len(self.dataset.list_of_words), output_dim = 128))
+            self.model.add(Embedding(len(self.list_of_words), output_dim = 128))
             # Bi-Directional RNN and LSTM
             self.model.add(Bidirectional(LSTM(128)))
             # Dense layers
@@ -58,11 +60,20 @@ class RNN:
             self.model.add(Dense(1,activation= 'sigmoid'))
             self.model.compile(optimizer=self.optimizer, loss='binary_crossentropy', metrics=['acc'])
             self.model.summary()
+            
+        self.SplitData(0.7, 0.3)
+        self.Tokenize()
     
+    def SplitData(self, train_size, test_size):
+        if (train_size + test_size) != 1.0:
+            return False
+        
+        self.x_train, self.x_test, self.y_train, self.y_test = train_test_split(self.dataset.dataset.clean, self.dataset.dataset.label, test_size = test_size, shuffle=True)
+        
     def GetListOfWords(self):
         list_of_words = []
-        for sample_words in self.dataset["clean_words"]:
-            for word in sample_words:
+        for sample in self.dataset.dataset["clean"]:
+            for word in sample.split():
                 list_of_words.append(word)
                 
         return list(set(list_of_words))
@@ -71,7 +82,7 @@ class RNN:
         self.train_score = {"acc":[], "val_acc":[], "loss":[], "val_loss":[]}
         self.best_acc = 0.0
         for ep in range(epochs):
-            self.model.fit(self.dataset.train_sequences, np.asarray(self.dataset.y_train), batch_size=batch_size, validation_split=0.2, epochs = 1)
+            self.model.fit(self.train_sequences, np.asarray(self.y_train), batch_size=batch_size, validation_split=0.2, epochs = 1)
             if self.model.history.history["val_acc"][0] > self.best_acc:
                 self.best_acc = self.model.history.history["val_acc"][0]
                 self.model.save("{}fn_{}.h5".format(self.save_dir, ep + 1))
@@ -81,7 +92,7 @@ class RNN:
                 self.train_score[key].append(self.model.history .history[key][0])
     
     def Predict(self, save_to):
-        self.predictions = self.model.predict(self.dataset.test_sequences)
+        self.predictions = self.model.predict(self.test_sequences)
         predicted_results = []
         for i in range(len(self.predictions)):
             if self.predictions[i].item() > 0.5:
@@ -89,8 +100,8 @@ class RNN:
             else:
                 predicted_results.append(0)
         
-        accuracy = accuracy_score(list(self.dataset.y_test), predicted_results)
-        cm = confusion_matrix(list(self.dataset.y_test), predicted_results)
+        accuracy = accuracy_score(list(self.y_test), predicted_results)
+        cm = confusion_matrix(list(self.y_test), predicted_results)
         plt.figure(figsize = (25, 25))
         sns.heatmap(cm, annot = True)
         print("Model Accuracy: {}".format(accuracy))
