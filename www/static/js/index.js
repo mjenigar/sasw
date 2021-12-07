@@ -42,18 +42,18 @@ function ClearForm(){
 
 function AnalyzeData(){
     if(GetFormData()){
-        // $(".wrapper").removeClass("hidden");
-        // $("#loader-container").removeClass("hidden");
+        $(".wrapper").removeClass("hidden");
+        $("#loader-container").removeClass("hidden");
         $.ajax({
             url: "/analyze",
             data: {input: JSON.stringify(INPUT)},
             type: 'POST',
             success: function(data){
-                // data = JSON.parse(data);
-                console.log(data);
-                // RenderReport(data);
-                // $("#main-modal").modal('show');
-                
+                data = JSON.parse(data);
+                $(".wrapper").addClass("hidden");
+                $("#loader-container").addClass("hidden");
+                RenderReport(data);
+                $("#main-modal").modal('show');
             },
             error: function(error){
                 console.log("Something went wrong!");

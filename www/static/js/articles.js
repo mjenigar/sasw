@@ -15,40 +15,42 @@ function LoadArticles(search){
         type: 'POST',
         success: function(data){
             data = JSON.parse(data);
-            console.log(data);
-            console.log("data len: " + data.length);
-            let HTML = '';
-            NO_PAGE = Math.ceil(data.length/MAX_ARTICLE_ON_PAGE)
-            let on_page = 0;
-            let page = 1;
-            let html = '<div class="row" id="page-'+page++ +'"><div class="row w-100">';
-            for(let i = 0; i < data.length; i++){
-                ++on_page;
-                if(on_page > MAX_ARTICLE_ON_PAGE){
-                    let class__ = (page != CURRENT_PAGE) ? "hidden": "";
-                    html += '</div></div><div class="row '+class__+'" id="page-'+ page++ +'"><div class="row w-100">';
-                    on_page = 1;
+            if(data.length == 0){
+                html = '<div class="col p-5"><div class="row" style="font-size: 5rem;"><div class="col"><i class="fas fa-dog"></i></div></div><div class="row"><div class="col" style="font-size: 2rem; font-weight: lighter;">Nothing to show</div></div></div>';
+                NO_PAGE = 0;
+            } else {
+                NO_PAGE = Math.ceil(data.length/MAX_ARTICLE_ON_PAGE)
+                let on_page = 0;
+                let page = 1;
+                html = '<div class="row" id="page-'+page++ +'"><div class="row w-100">';
+                for(let i = 0; i < data.length; i++){
+                    ++on_page;
+                    if(on_page > MAX_ARTICLE_ON_PAGE){
+                        let class__ = (page != CURRENT_PAGE) ? "hidden": "";
+                        html += '</div></div><div class="row '+class__+'" id="page-'+ page++ +'"><div class="row w-100">';
+                        on_page = 1;
+                    }
+                    
+                    let class_ = (i == (data.length - 1) && i % 2 == 0) ? "col": "col-sm-6";
+                    let side = (i % 2 == 0) ? "float-left" : "float-right";
+                    html += ''+
+                        '<div id="record-'+data[i][0]+'" class="'+class_+' p-3 '+side+'">' +
+                        '   <div class="card bg-dark shadow-lg rounded" style="height: 600px !important; width: 650px !important; text-align: start !important;">' +
+                        '       <div class="card-header mb-2">'+
+                        '           <div class="row"><div class="col"><h2 class="card-title">'+ data[i][1] +'</h2></div></div>' +
+                        '           <div class="row" style="font-style: italic;"><div class="col text-muted start"> Published: '+FormatDate(data[i][4])+'</div><div class="col text-muted center"> Analyzed: '+FormatDate(data[i][5])+'</div><div class="col text-muted end""> Source: '+data[i][3]+'</div></div>'+
+                        '       </div>'+
+                        '       <div class="card-body" style="overflow-x: hidden; overflow-y: auto;">' +
+                        '           <div class="row"><div class="col"><p class="card-text" style="text-align: justify;">'+data[i][2]+'</p></div></div>' +
+                        '       </div>' +
+                        '       <div class="card-footer center">'+
+                        '           <div class="row"><div class="col" data-toggle="tooltip" title="Random Forest Classifier">'+ GetIcon(data[i][6]) +'</div><div class="col" data-toggle="tooltip" title="Naive Bayes Classifier">'+ GetIcon(data[i][7]) +'</div><div class="col" data-toggle="tooltip" title="Recurrent Neural Net">'+ GetIcon(data[i][8]) +'</div></div>' +
+                        '       </div>'+
+                        '   </div>'+
+                        '</div>';
+                    
+                    if(on_page % 2 == 0 && on_page < MAX_ARTICLE_ON_PAGE) html += '</div><div class="row w-100">';
                 }
-                
-                let class_ = (i == (data.length - 1) && i % 2 == 0) ? "col": "col-sm-6";
-                let side = (i % 2 == 0) ? "float-left" : "float-right";
-                html += ''+
-                    '<div id="record-'+data[i][0]+'" class="'+class_+' p-3 '+side+'">' +
-                    '   <div class="card bg-dark shadow-lg rounded" style="height: 600px !important; width: 650px !important; text-align: start !important;">' +
-                    '       <div class="card-header mb-2">'+
-                    '           <div class="row"><div class="col"><h2 class="card-title">'+ data[i][1] +'</h2></div></div>' +
-                    '           <div class="row" style="font-style: italic;"><div class="col text-muted start"> Published: '+FormatDate(data[i][4])+'</div><div class="col text-muted center"> Analyzed: '+FormatDate(data[i][5])+'</div><div class="col text-muted end""> Source: '+data[i][3]+'</div></div>'+
-                    '       </div>'+
-                    '       <div class="card-body" style="overflow-x: hidden; overflow-y: auto;">' +
-                    '           <div class="row"><div class="col"><p class="card-text" style="text-align: justify;">'+data[i][2]+'</p></div></div>' +
-                    '       </div>' +
-                    '       <div class="card-footer center">'+
-                    '           <div class="row"><div class="col" data-toggle="tooltip" title="Random Forest Classifier">'+ GetIcon(data[i][6]) +'</div><div class="col" data-toggle="tooltip" title="Naive Bayes Classifier">'+ GetIcon(data[i][7]) +'</div><div class="col" data-toggle="tooltip" title="Recurrent Neural Net">'+ GetIcon(data[i][8]) +'</div></div>' +
-                    '       </div>'+
-                    '   </div>'+
-                    '</div>';
-                
-                if(on_page % 2 == 0 && on_page < MAX_ARTICLE_ON_PAGE) html += '</div><div class="row w-100">';
             }
             $("#article-field").empty().append(html);
             $('[data-toggle="tooltip"]').tooltip();

@@ -29,7 +29,9 @@ class Database:
     sql = "INSERT INTO articles (title, content, source, published, analyzed, model1, model2, model3) VALUES("
     for i, key in enumerate(data):
       delimiter = "," if i < len(data) - 1 else ""
-      if key is not "model1" and key is not "model2" and key is not "model3":
+      if key == "published" and data[key] == None:
+        sql += "{}{}".format("NULL", delimiter)
+      elif key is not "model1" and key is not "model2" and key is not "model3":
         sql += "'{}'{}".format(data[key], delimiter)
       else:
         sql += "{}{}".format(data[key], delimiter)

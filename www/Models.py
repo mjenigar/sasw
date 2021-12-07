@@ -61,8 +61,8 @@ class RNN:
             self.model.compile(optimizer=self.optimizer, loss='binary_crossentropy', metrics=['acc'])
             self.model.summary()
             
-        self.SplitData(0.7, 0.3)
-        self.Tokenize()
+            self.SplitData(0.7, 0.3)
+            self.Tokenize()
     
     def SplitData(self, train_size, test_size):
         if (train_size + test_size) != 1.0:

@@ -4,7 +4,7 @@ def Raw2Dict(raw, predictions):
     today = date.today()
     return {
         "title": raw["input-title"],
-        "content": raw["input-content"],
+        "content": raw["input-content"].replace("'", "''"),
         "source": raw["input-src"],
         "published": FormatDate(raw["input-date"]),
         "analyzed": today,
@@ -14,5 +14,8 @@ def Raw2Dict(raw, predictions):
     }
     
 def FormatDate(date):
+    if date == "" or date == None:
+        return None
+    
     date = date.split("/")
     return "{}-{}-{}".format(date[2], date[1], date[0])

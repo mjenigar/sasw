@@ -165,10 +165,11 @@
             <a class="u-button-style u-custom-left-right-menu-spacing u-custom-padding-bottom u-custom-top-bottom-menu-spacing u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="#"></a>
           </div>
           <div class="u-nav-container">
-            <ul class="u-nav u-unstyled u-nav-1"><li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" style="padding: 10px 20px;">HOME</a></li>
-                <li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="https://github.com/mjenigar/sasw-FakeNewsIdentification" style="padding: 10px 20px;">GIT</a></li>
-                <li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="https://github.com/mjenigar/sasw-FakeNewsIdentification/blob/main/data/src.txt" style="padding: 10px 20px;">DATASET</a>
-            </ul>
+            <ul class="u-nav u-unstyled u-nav-1">
+              <li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base active_template" href="/" style="padding: 10px 20px;">HOME</a></li>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="/articles" style="padding: 10px 20px;">ARTICLES</a></li>
+              <li class="u-nav-item"><a class="u-button-style u-nav-link u-text-active-palette-1-base u-text-hover-palette-2-base" href="https://github.com/mjenigar/sasw-FakeNewsIdentification" style="padding: 10px 20px;">GIT</a>
+          </ul>
           </div>
         </nav>
       </div>
@@ -180,30 +181,34 @@
           <div class="u-layout-row">
             <div class="u-container-style u-layout-cell u-left-cell u-palette-1-base u-size-20 u-layout-cell-1">
               <div class="u-container-layout u-valign-top u-container-layout-1"><span class="u-icon u-icon-circle u-icon-1"></span>
-                <h4 class="u-align-center u-text u-text-1">Čo je to Falošná správa?</h4>
-                <p class="u-align-center u-text u-text-body-alt-color u-text-2">Sú nepravdivé alebo zavádzajúce informácie zverejňované ako správa. Cieľom falošnej správy môže byť napríklad poškodiť reputáciu fyzickej či právnickej osoby alebo získať príjmy z reklamy.</p>
+                <h4 class="u-align-center u-text u-text-1">What is fake mews?</h4>
+                <p class="u-align-center u-text u-text-body-alt-color u-text-2">?Fake news? is a term that has come to mean different things to different people. At its core, we are defining ?fake news? as those news stories that are false: the story itself is fabricated, with no verifiable facts, sources or quotes. Sometimes these stories may be propaganda that is intentionally designed to mislead the reader, or may be designed as ?clickbait? written for economic incentives (the writer profits on the number of people who click on the story). In recent years, fake news stories have proliferated via social media, in part because they are so easily and quickly shared online.</p>
               </div>
             </div>
             <div class="u-container-style u-layout-cell u-palette-2-base u-size-20 u-layout-cell-2">
               <div class="u-container-layout u-valign-top u-container-layout-2"><span class="u-icon u-icon-circle u-icon-2"></span>
-              <h4 class="u-align-center u-text u-text-3">Typy falošných správ</h4>
+              <h4 class="u-align-center u-text u-text-3">Types of fake news</h4>
               <p class="u-align-center u-text u-text-body-alt-color u-text-4">
                 <ol>
-                      <li>Satira alebo paródia</li>
-                      <li>Falošné spojenie</li>
-                      <li>Zavádzajúci obsah</li>
-                      <li>Falošný kontext</li>
-                      <li>Obsah uvádzaný pod falošným menom</li>
-                      <li>Manipulovaný obsah </li>
-                      <li>Vymyslený obsah</li>
+                      <li>Satire or parody</li>
+                      <li>False connection</li>
+                      <li>Misleading content</li>
+                      <li>False context</li>
+                      <li>Content published under a false identity</li>
+                      <li>Manipulated content</li>
+                      <li>Fictitious content</li>
                 </ol>
               </p>
             </div>
           </div>
           <div class="u-align-center u-container-style u-layout-cell u-palette-3-base u-right-cell u-size-20 u-layout-cell-3">
             <div class="u-container-layout u-valign-top u-container-layout-3"><span class="u-icon u-icon-circle u-icon-3"></span>
-              <h4 class="u-text u-text-5">Čo sme spravili?</h4>
-              <p class="u-text u-text-body-alt-color u-text-6">Doplniť</p>
+              <h4 class="u-text u-text-5" style="color: white;">Our solution</h4>
+              <p class="u-text u-text-body-alt-color u-text-6">We created a simple platform for articles analyzing. Your article will be analysed with 3 types of machine learning model. 
+                <strong><a href = "https://en.wikipedia.org/wiki/Random_forest" style="text-decoration: none;">Random Forest classifier</a></strong>,
+                <strong><a href = "https://en.wikipedia.org/wiki/Naive_Bayes_classifier" style="text-decoration: none;">Naive Bayes classifier</a></strong> and 
+                <strong><a href = "https://en.wikipedia.org/wiki/Recurrent_neural_network" style="text-decoration: none;">Recurrent Neural Net</a></strong>.
+              </p>
             </div>
           </div>
         </div>
@@ -226,7 +231,7 @@
               </div>
               <div class="col">
                 <label for="input-date">Date</label>
-                <input id="input-date" type="text" class="form-control bg-light" style="color:black;" placeholder="Article title">
+                <input id="input-date" type="text" class="form-control bg-light" style="color:black;" placeholder="Article publish date">
               </div>
             </div>
           </div>
